@@ -14,11 +14,11 @@ def test():
 
     with tf.Session() as sess:
         saver = tf.train.Saver()
-        saver.restore(sess, './saves/one-9500')
-        summary_writer = tf.summary.FileWriter('summaries/one')
+        saver.restore(sess, './saves/two-4000')
 
         confusion = np.zeros((len(preprocessing.CLASSES), len(preprocessing.CLASSES)))
         good = 0
+        good_case_insensitive = 0
         for i in tqdm(range(n_test)):
             image = preprocessing.open_image(dataset[i])
             label = preprocessing.get_class_index(dataset[i])
@@ -28,8 +28,11 @@ def test():
             confusion[label, predicted_label] += 1
             if label == predicted_label:
                 good += 1
+            if preprocessing.CLASSES[label].lower() == preprocessing.CLASSES[predicted_label].lower():
+                good_case_insensitive += 1
 
         print("Accuracy :", good/n_test*100)
+        print("Case-insensitive accuracy :", good_case_insensitive/n_test*100)
         confusion = (
                 confusion / np.array([np.sum(confusion, 1)]).transpose() * 255
         ).astype(np.uint8)

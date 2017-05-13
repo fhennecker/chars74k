@@ -70,7 +70,7 @@ def train():
             summary.value.add(tag='Loss', simple_value=float(loss))
 
             if t % 10 == 0: print(loss)
-            if t % 2000 == 0: saver.save(sess, 'saves/'+model_name, global_step=t)
+            if t % 1000 == 0: saver.save(sess, 'saves/'+model_name, global_step=t)
             if t % 50 == 0:
                 images, labels = preprocessing.get_batch(validation_dataset, 20, (128, 128))
                 classes = sess.run(nn.classes, feed_dict={nn.input:images})
