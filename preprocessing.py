@@ -32,10 +32,6 @@ def split_and_save_dataset(dataset, filename):
             for i in perm[startindex:endindex]:
                 f.write(dataset[i]+'\n')
 
-    with open(filename, 'w') as f:
-        for name in dataset:
-            f.write(name+'\n')
-
 def get_class_index(filename):
     return int(re.findall(r'.*img(\d+).*', filename)[0])-1
 
