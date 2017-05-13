@@ -14,7 +14,7 @@ def test():
 
     with tf.Session() as sess:
         saver = tf.train.Saver()
-        saver.restore(sess, './saves/two-4000')
+        saver.restore(sess, './saves/dropout-37000')
 
         confusion = np.zeros((len(preprocessing.CLASSES), len(preprocessing.CLASSES)))
         good = 0

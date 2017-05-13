@@ -44,9 +44,9 @@ def train():
     img_h, img_w = 128, 128
     train_steps = int(1e5)
     batch_size = 10
-    model_name = 'dropout'
+    model_name = 'normalised_d08'
 
-    nn = Classifier('classifier', img_w, img_h, len(preprocessing.CLASSES), 0.6)
+    nn = Classifier('classifier', img_w, img_h, len(preprocessing.CLASSES), 0.8)
     dataset = list(map(lambda f:f.strip(), open('good_train', 'r').readlines()))
     validation_dataset = list(map(lambda f:f.strip(), 
                                   open('good_validation', 'r').readlines()))

@@ -67,6 +67,12 @@ def open_image(filename, scale_to=[128, 128]):
     # centering image
     x, y = int(target_w/2 - img.shape[1]/2), int(target_h/2 - img.shape[0]/2)
     processed_img[y:y+img.shape[0], x:x+img.shape[1]] = img
+
+    # normalising
+    processed_img = processed_img.astype(np.float32)
+    for c in range(3):
+        processed_img[:,:,c] /= np.max(processed_img[:,:,c])
+
     return processed_img
 
 
