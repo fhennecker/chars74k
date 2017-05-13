@@ -1,31 +1,32 @@
 import preprocessing
-import cv2
 import numpy as np
 import tensorflow as tf
 import tensorflow.contrib.slim as slim
 
 class Classifier():
-    def __init__(self, scope, img_w, img_h, n_classes):
+    def __init__(self, scope, img_w, img_h, n_classes, dropout_keep_prob=1.0):
         self.scope = scope
         self.n_classes = n_classes
+        self.dropout_keep_prob = dropout_keep_prob
 
         self.input = tf.placeholder(tf.float32, [None, img_h, img_w, 3])
 
         self.conv1 = slim.conv2d(
-                self.input,
+                tf.nn.dropout(self.input, self.dropout_keep_prob),
                 num_outputs=32, kernel_size=[8, 8],
                 stride=[2, 2], padding='Valid',
                 scope=self.scope+'_conv1'
         )
         self.conv2 = slim.conv2d(
-                self.conv1,
+                tf.nn.dropout(self.conv1, self.dropout_keep_prob),
                 num_outputs=32, kernel_size=[4, 4],
                 stride=[2, 2], padding='Valid',
                 scope=self.scope+'_conv2'
         )
 
         self.classes = slim.fully_connected(
-                slim.flatten(self.conv2), self.n_classes,
+                tf.nn.dropout(slim.flatten(self.conv2), self.dropout_keep_prob),
+                self.n_classes,
                 scope=self.scope+'_fc',
                 activation_fn=None
         )
@@ -43,9 +44,9 @@ def train():
     img_h, img_w = 128, 128
     train_steps = int(1e5)
     batch_size = 10
-    model_name = 'two'
+    model_name = 'dropout'
 
-    nn = Classifier('classifier', img_w, img_h, len(preprocessing.CLASSES))
+    nn = Classifier('classifier', img_w, img_h, len(preprocessing.CLASSES), 0.6)
     dataset = list(map(lambda f:f.strip(), open('good_train', 'r').readlines()))
     validation_dataset = list(map(lambda f:f.strip(), 
                                   open('good_validation', 'r').readlines()))
