@@ -43,12 +43,26 @@ def get_class(filename):
     """Get the actual digit or character of the image"""
     return CLASSES[get_class_index(filename)]
 
+def images_stats(dataset):
+    """Print max width and height of all images in dataset"""
+    max_width, max_height = 0, 0
+    for img_name in dataset:
+        img = cv2.imread(img_name)
+        if img.shape[0] > max_height: max_height = img.shape[0]
+        if img.shape[1] > max_width: max_width = img.shape[1]
+    print("Max width : %d, max height: %d" % (max_width, max_height))
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('datapath')
+    parser.add_argument('-s', action='store_true', help='Split and save dataset')
 
     opt = parser.parse_args()
     
     filenames = load_filenames(opt.datapath, ['Good', 'Bmp'])
-    split_and_save_dataset(filenames, 'good')
+    if opt.s:
+        split_and_save_dataset(filenames, 'good')
+    images_stats(filenames)
+
+
