@@ -41,17 +41,20 @@ class Classifier():
 
 def train():
     img_h, img_w = 128, 128
-    train_steps = int(1e4)
+    train_steps = int(1e5)
     batch_size = 10
+    model_name = 'two'
 
     nn = Classifier('classifier', img_w, img_h, len(preprocessing.CLASSES))
     dataset = list(map(lambda f:f.strip(), open('good_train', 'r').readlines()))
+    validation_dataset = list(map(lambda f:f.strip(), 
+                                  open('good_validation', 'r').readlines()))
 
     with tf.Session() as sess:
         init = tf.global_variables_initializer()
         sess.run(init)
         saver = tf.train.Saver()
-        summary_writer = tf.summary.FileWriter('summaries/one')
+        summary_writer = tf.summary.FileWriter('summaries/'+model_name)
 
         for t in range(train_steps):
             
@@ -64,11 +67,18 @@ def train():
 
             summary = tf.Summary()
             summary.value.add(tag='Loss', simple_value=float(loss))
+
+            if t % 10 == 0: print(loss)
+            if t % 2000 == 0: saver.save(sess, 'saves/'+model_name, global_step=t)
+            if t % 50 == 0:
+                images, labels = preprocessing.get_batch(validation_dataset, 20, (128, 128))
+                classes = sess.run(nn.classes, feed_dict={nn.input:images})
+                summary.value.add(tag='ValidationError',
+                        simple_value=float(sum(np.argmax(classes, -1) != labels)))
+
             summary_writer.add_summary(summary, t)
             summary_writer.flush()
 
-            if t % 10 == 0: print(loss)
-            if t % 500 == 0: saver.save(sess, 'saves/one', global_step=t)
 
 
 if __name__ == "__main__":
