@@ -3,7 +3,6 @@ import cv2
 import numpy as np
 import tensorflow as tf
 import tensorflow.contrib.slim as slim
-import random
 
 class Classifier():
     def __init__(self, scope, img_w, img_h, n_classes):
@@ -33,11 +32,6 @@ class Classifier():
         ))
         self.train_step = tf.train.RMSPropOptimizer(1e-3).minimize(self.loss)
 
-def get_batch(dataset, batch_size, dimensions):
-    batch_filenames = random.sample(dataset, batch_size)
-    images = np.array(list(map(preprocessing.open_image, batch_filenames)))
-    labels = np.array(list(map(preprocessing.get_class_index, batch_filenames)))
-    return images, labels
 
 def train():
     img_h, img_w = 128, 128
@@ -55,7 +49,7 @@ def train():
 
         for t in range(train_steps):
             
-            images, labels = get_batch(dataset, 10, (128, 128))
+            images, labels = preprocessing.get_batch(dataset, 10, (128, 128))
 
             loss, _ = sess.run([nn.loss, nn.train_step], feed_dict={
                 nn.input   : images,

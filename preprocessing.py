@@ -3,6 +3,7 @@ import argparse
 import os
 import string, re
 import numpy as np
+import random
 
 CLASSES = string.digits + string.ascii_uppercase + string.ascii_lowercase
 
@@ -36,6 +37,12 @@ def get_class_index(filename):
 def get_class(filename):
     """Get the actual digit or character of the image"""
     return CLASSES[get_class_index(filename)]
+
+def get_batch(dataset, batch_size, dimensions):
+    batch_filenames = random.sample(dataset, batch_size)
+    images = np.array(list(map(open_image, batch_filenames)))
+    labels = np.array(list(map(get_class_index, batch_filenames)))
+    return images, labels
 
 def images_stats(dataset):
     """Print max width and height of all images in dataset"""
