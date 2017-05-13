@@ -18,7 +18,7 @@ class Classifier():
                 scope=self.scope+'_conv1'
         )
         self.conv2 = slim.conv2d(
-                self.input,
+                self.conv1,
                 num_outputs=32, kernel_size=[4, 4],
                 stride=[2, 2], padding='Valid',
                 scope=self.scope+'_conv2'
