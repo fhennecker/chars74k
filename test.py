@@ -19,6 +19,7 @@ def test():
         confusion = np.zeros((len(preprocessing.CLASSES), len(preprocessing.CLASSES)))
         good = 0
         good_case_insensitive = 0
+        in_top3 = 0
         for i in tqdm(range(n_test)):
             image = preprocessing.open_image(dataset[i])
             label = preprocessing.get_class_index(dataset[i])
@@ -30,9 +31,12 @@ def test():
                 good += 1
             if preprocessing.CLASSES[label].lower() == preprocessing.CLASSES[predicted_label].lower():
                 good_case_insensitive += 1
+            if label in classes[0].argsort()[-3:]:
+                in_top3 += 1
 
         print("Accuracy :", good/n_test*100)
         print("Case-insensitive accuracy :", good_case_insensitive/n_test*100)
+        print("Top 3 accuracy :", in_top3/n_test*100)
         confusion = (
                 confusion / np.array([np.sum(confusion, 1)]).transpose() * 255
         ).astype(np.uint8)
