@@ -1,9 +1,7 @@
 import cv2
 import argparse
-import sys, os
-import string
-import re
-import random
+import os
+import string, re
 import numpy as np
 
 CLASSES = string.digits + string.ascii_uppercase + string.ascii_lowercase
