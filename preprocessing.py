@@ -48,17 +48,34 @@ def images_stats(dataset):
         if img.shape[1] > max_width: max_width = img.shape[1]
     print("Max width : %d, max height: %d" % (max_width, max_height))
 
+def open_image(filename, scale_to=[128, 128]):
+    """Opens an image, returns the preprocessed image (scaled, masked)"""
+    img = cv2.imread(filename) * cv2.imread(filename.replace('Bmp', 'Msk'))/255
+    processed_img = np.zeros(scale_to+[3])
+
+    # scaling
+    img_w, img_h = img.shape[1], img.shape[0]
+    target_w, target_h = scale_to[1], scale_to[0]
+    factor = target_w / img_w if img_w/img_h > target_w/target_h else target_h / img_h
+    img = cv2.resize(img, None, fx=factor, fy=factor)
+
+    # centering image
+    x, y = int(target_w/2 - img.shape[1]/2), int(target_h/2 - img.shape[0]/2)
+    processed_img[y:y+img.shape[0], x:x+img.shape[1]] = img
+    return processed_img
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('datapath')
-    parser.add_argument('-s', action='store_true', help='Split and save dataset')
+    parser.add_argument('-s', default="", help='Split and save dataset')
+    parser.add_argument('-t', action='store_true', help='Print dataset stats')
 
     opt = parser.parse_args()
     
-    filenames = load_filenames(opt.datapath, ['Good', 'Bmp'])
-    if opt.s:
-        split_and_save_dataset(filenames, 'good')
-    images_stats(filenames)
+    if opt.s: 
+        filenames = load_filenames(opt.datapath, ['Good', 'Bmp'])
+        split_and_save_dataset(filenames, opt.s)
+    if opt.t: images_stats(filenames)
 
 
