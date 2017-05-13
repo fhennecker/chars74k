@@ -17,9 +17,15 @@ class Classifier():
                 stride=[2, 2], padding='Valid',
                 scope=self.scope+'_conv1'
         )
+        self.conv2 = slim.conv2d(
+                self.input,
+                num_outputs=32, kernel_size=[4, 4],
+                stride=[2, 2], padding='Valid',
+                scope=self.scope+'_conv2'
+        )
 
         self.classes = slim.fully_connected(
-                slim.flatten(self.conv1), self.n_classes,
+                slim.flatten(self.conv2), self.n_classes,
                 scope=self.scope+'_fc',
                 activation_fn=None
         )
