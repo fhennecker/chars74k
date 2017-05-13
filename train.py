@@ -50,6 +50,8 @@ def train():
     with tf.Session() as sess:
         init = tf.global_variables_initializer()
         sess.run(init)
+        saver = tf.train.Saver()
+        summary_writer = tf.summary.FileWriter('summaries/one')
 
         for t in range(train_steps):
             
@@ -59,8 +61,14 @@ def train():
                 nn.input   : images,
                 nn.targets : labels
             })
-            if t % 10 == 0:
-                print(loss)
+
+            summary = tf.Summary()
+            summary.value.add(tag='Loss', simple_value=float(loss))
+            summary_writer.add_summary(summary, t)
+            summary_writer.flush()
+
+            if t % 10 == 0: print(loss)
+            if t % 500 == 0: saver.save(sess, 'saves/one', global_step=t)
 
 
 if __name__ == "__main__":
