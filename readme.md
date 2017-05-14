@@ -84,7 +84,7 @@ correspond to the lowercase/uppercase equivalent of the letter.
 shows predictions. The order of the classes, top to bottom, is : digits, 
 uppercase, lowercase).
 
-![Test set confusion matrix](https://raw.githubusercontent.com/fhennecker/chars74k/master/test_set_confusion.png)
+![Test set confusion matrix](https://raw.githubusercontent.com/fhennecker/chars74k/master/img/test_set_confusion.png)
 
 An interesting metric is the case insensitive accuracy, which is **75.8%**. More
 than 5% of the predictions are correct but miss the case.
@@ -100,8 +100,8 @@ Here are randomly selected examples of errors in the test set classification.
 Characters which were correctly predicted but had the wrong case prediction
 were ignored on purpose. 
 
-![](https://raw.githubusercontent.com/fhennecker/chars74k/master/misclassified1.png)
-![](https://raw.githubusercontent.com/fhennecker/chars74k/master/misclassified2.png)
+![](https://raw.githubusercontent.com/fhennecker/chars74k/master/img/misclassified1.png)
+![](https://raw.githubusercontent.com/fhennecker/chars74k/master/img/misclassified2.png)
 
 As you can see, some samples are of very bad quality (heavy distortion, zoom
 or rotation), and some confusions can be understood (the cropped o being
