@@ -13,32 +13,33 @@ class Classifier():
 
         self.conv1 = slim.conv2d(
                 self.input,
-                num_outputs=32, kernel_size=[8, 8],
-                stride=[2, 2], padding='Valid',
+                num_outputs=32, kernel_size=[3, 8],
+                stride=[1, 1], padding='Valid',
                 scope=self.scope+'_conv1'
         )
         self.conv2 = slim.conv2d(
                 self.conv1,
-                num_outputs=64, kernel_size=[4, 4],
+                num_outputs=64, kernel_size=[5, 5],
                 stride=[2, 2], padding='Valid',
                 scope=self.scope+'_conv2'
         )
         self.conv3 = slim.conv2d(
                 self.conv2,
-                num_outputs=128, kernel_size=[4, 4],
+                num_outputs=128, kernel_size=[5, 5],
                 stride=[2, 2], padding='Valid',
                 scope=self.scope+'_conv3'
         )
+        self.pool = slim.max_pool2d(self.conv3, [2, 2])
 
 
         self.hidden = slim.fully_connected(
-                slim.flatten(self.conv3),
+                slim.flatten(self.pool),
                 512,
                 scope=self.scope+'_hidden',
                 activation_fn=tf.nn.relu
         )
         self.classes = slim.fully_connected(
-                self.hidden,
+                tf.nn.dropout(self.hidden, self.dropout_keep_prob),
                 self.n_classes,
                 scope=self.scope+'_fc',
                 activation_fn=None
@@ -57,7 +58,7 @@ def train():
     img_h, img_w = 64, 64
     train_steps = int(1e5)
     batch_size = 10
-    model_name = 'wider_deeper'
+    model_name = 'following_conventions'
 
     nn = Classifier('classifier', img_w, img_h, len(preprocessing.CLASSES), 0.8)
     dataset = list(map(lambda f:f.strip(), open('good_train', 'r').readlines()))
