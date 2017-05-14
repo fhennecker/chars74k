@@ -111,16 +111,16 @@ interpreted as an 'n', the 'B' which has a similar structure as an 'E',...)
 The requirements are python3, OpenCV and the requirements written in 
 `requirements.txt` (run `pip install -r requirements.txt`)
 
-    # run the dataset split
-    python preprocessing.py -s good
+    # run the dataset split (the English directory should be downloaded first)
+    python preprocessing.py English -s datasplits/good
 
     # prepare directories for training
     mkdir saves summaries 
 
     # run training
-    python train.py -t good_train -v good_validation -m awesome_model
+    python train.py -t datasplits/good_train -v datasplits/good_validation -m saves/awesome_model
 
     # run testing
-    python test.py -d good_test -m saves/following_conventions-25000
+    python test.py -d datasplits/good_test -m saves/following_conventions-25000
 
 
