@@ -2,9 +2,12 @@ import preprocessing
 import numpy as np
 import tensorflow as tf
 import tensorflow.contrib.slim as slim
+import argparse
 
 class Classifier():
     def __init__(self, scope, img_w, img_h, n_classes, dropout_keep_prob=1.0):
+        """Defining the model."""
+
         self.scope = scope
         self.n_classes = n_classes
         self.dropout_keep_prob = dropout_keep_prob
@@ -54,18 +57,19 @@ class Classifier():
         self.train_step = tf.train.RMSPropOptimizer(1e-3).minimize(self.loss)
 
 
-def train():
+def train(model_name, training_dataset, validation_dataset):
     img_h, img_w = 64, 64
     train_steps = int(1e5)
     batch_size = 10
-    model_name = 'following_conventions'
 
     nn = Classifier('classifier', img_w, img_h, len(preprocessing.CLASSES), 0.8)
-    dataset = list(map(lambda f:f.strip(), open('good_train', 'r').readlines()))
+    dataset = list(map(lambda f:f.strip(),
+                       open(training_dataset, 'r').readlines()))
     validation_dataset = list(map(lambda f:f.strip(), 
-                                  open('good_validation', 'r').readlines()))
+                                  open(validation_dataset, 'r').readlines()))
 
     with tf.Session() as sess:
+        
         init = tf.global_variables_initializer()
         sess.run(init)
         saver = tf.train.Saver()
@@ -73,29 +77,37 @@ def train():
 
         for t in range(train_steps):
             
-            images, labels = preprocessing.get_batch(dataset, 10, (64, 64))
-
+            # perform training step
+            images, labels = preprocessing.get_batch(dataset, 10, (img_h, img_w))
             loss, _ = sess.run([nn.loss, nn.train_step], feed_dict={
                 nn.input   : images,
                 nn.targets : labels
             })
 
+            # show and save training status
+            if t % 10 == 0: print(t, loss)
+            if t % 1000 == 0: saver.save(sess, 'saves/'+model_name, global_step=t)
+
             summary = tf.Summary()
             summary.value.add(tag='Loss', simple_value=float(loss))
-
-            if t % 10 == 0: print(loss)
-            if t % 1000 == 0: saver.save(sess, 'saves/'+model_name, global_step=t)
             if t % 50 == 0:
-                images, labels = preprocessing.get_batch(validation_dataset, 20, (64, 64))
+                # testing model on validation set occasionally
+                images, labels = preprocessing.get_batch(
+                        validation_dataset, 20, (img_h, img_w))
                 classes = sess.run(nn.classes, feed_dict={nn.input:images})
                 summary.value.add(tag='ValidationError',
                         simple_value=float(sum(np.argmax(classes, -1) != labels)))
-
             summary_writer.add_summary(summary, t)
             summary_writer.flush()
 
-
-
 if __name__ == "__main__":
-    train()
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+            '-t', type=str, required=True, help='Training dataset name')
+    parser.add_argument(
+            '-v', type=str, required=True, help='Validation dataset name')
+    parser.add_argument('-m', type=str, required=True, help='Model name')
+
+    opt = parser.parse_args()
+    train(opt.m, opt.t, opt.v)
 

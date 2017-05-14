@@ -40,7 +40,7 @@ def get_class(filename):
 
 def get_batch(dataset, batch_size, dimensions):
     batch_filenames = random.sample(dataset, batch_size)
-    images = np.array(list(map(open_image, batch_filenames)))
+    images = np.array(list(map(lambda f:open_image(f, dimensions), batch_filenames)))
     labels = np.array(list(map(get_class_index, batch_filenames)))
     return images, labels
 
@@ -56,7 +56,7 @@ def images_stats(dataset):
 def open_image(filename, scale_to=[64, 64]):
     """Opens an image, returns the preprocessed image (scaled, masked)"""
     img = cv2.imread(filename) * cv2.imread(filename.replace('Bmp', 'Msk'))/255
-    processed_img = np.zeros(scale_to+[3])
+    processed_img = np.zeros(list(scale_to)+[3])
 
     # scaling
     #  img_w, img_h = img.shape[1], img.shape[0]
