@@ -19,19 +19,26 @@ class Classifier():
         )
         self.conv2 = slim.conv2d(
                 self.conv1,
-                num_outputs=32, kernel_size=[4, 4],
+                num_outputs=64, kernel_size=[4, 4],
                 stride=[2, 2], padding='Valid',
                 scope=self.scope+'_conv2'
         )
         self.conv3 = slim.conv2d(
                 self.conv2,
-                num_outputs=32, kernel_size=[4, 4],
+                num_outputs=128, kernel_size=[4, 4],
                 stride=[2, 2], padding='Valid',
                 scope=self.scope+'_conv3'
         )
 
-        self.classes = slim.fully_connected(
+
+        self.hidden = slim.fully_connected(
                 slim.flatten(self.conv3),
+                512,
+                scope=self.scope+'_hidden',
+                activation_fn=tf.nn.relu
+        )
+        self.classes = slim.fully_connected(
+                self.hidden,
                 self.n_classes,
                 scope=self.scope+'_fc',
                 activation_fn=None
@@ -50,7 +57,7 @@ def train():
     img_h, img_w = 64, 64
     train_steps = int(1e5)
     batch_size = 10
-    model_name = 'conv3'
+    model_name = 'wider_deeper'
 
     nn = Classifier('classifier', img_w, img_h, len(preprocessing.CLASSES), 0.8)
     dataset = list(map(lambda f:f.strip(), open('good_train', 'r').readlines()))

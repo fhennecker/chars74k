@@ -14,7 +14,7 @@ def test():
 
     with tf.Session() as sess:
         saver = tf.train.Saver()
-        saver.restore(sess, './saves/grayscale_pool_stretch_64-32000')
+        saver.restore(sess, './saves/wider_deeper-40000')
 
         confusion = np.zeros((len(preprocessing.CLASSES), len(preprocessing.CLASSES)))
         good = 0
