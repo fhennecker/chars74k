@@ -67,13 +67,23 @@ rewrote the network as follows:
 This network gave the best results on the validation set at **71.7%**.
 
 ## Leads for improving performance
+The performance obtained and discussed below are not state-of-the-art. This is
+because the scope of this challenge, I believe, was not to try to get
+extremely close to it but rather to show a work flow and structure. However,
+here are a couple of ideas to improve performance further :
 
 * The dataset is quite small (less than 10K images). Data augmentation could
-  help towards better generalisation perhaps.
+  help towards better generalisation (affine transformations on images, using
+  the computer generated characters available in the original dataset, using
+  GANs, ...)
 * There are probably far better architectures, making better use of dropout,
   convolution and max pooling than the one presented here.
 
 ## Final model performance
+The metric used is the percentage of correct predictions since this is a 
+balanced multi-class prediction problem and we only care about whether we
+predicted the right caracter or not. The chance level is at 1.61%.
+
 The final test set accuracy is **69.3%**. This result is quite close to the
 validation set accuracy (71.7%).
 
