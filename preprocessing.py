@@ -59,19 +59,25 @@ def open_image(filename, scale_to=[128, 128]):
     processed_img = np.zeros(scale_to+[3])
 
     # scaling
-    img_w, img_h = img.shape[1], img.shape[0]
-    target_w, target_h = scale_to[1], scale_to[0]
-    factor = target_w / img_w if img_w/img_h > target_w/target_h else target_h / img_h
-    img = cv2.resize(img, None, fx=factor, fy=factor)
+    #  img_w, img_h = img.shape[1], img.shape[0]
+    #  target_w, target_h = scale_to[1], scale_to[0]
+    #  factor = target_w / img_w if img_w/img_h > target_w/target_h else target_h / img_h
+    #  img = cv2.resize(img, None, fx=factor, fy=factor)
+    img = cv2.resize(img, tuple(scale_to))
 
     # centering image
-    x, y = int(target_w/2 - img.shape[1]/2), int(target_h/2 - img.shape[0]/2)
-    processed_img[y:y+img.shape[0], x:x+img.shape[1]] = img
+    #  x, y = int(target_w/2 - img.shape[1]/2), int(target_h/2 - img.shape[0]/2)
+    #  processed_img[y:y+img.shape[0], x:x+img.shape[1]] = img
 
     # normalising
-    processed_img = processed_img.astype(np.float32)
+    processed_img = img.astype(np.float32)
     for c in range(3):
         processed_img[:,:,c] /= np.max(processed_img[:,:,c])
+
+    # to grayscale
+    processed_img = cv2.cvtColor(
+            (processed_img*255).astype(np.uint8), cv2.COLOR_RGB2GRAY)
+    processed_img = np.expand_dims(processed_img, -1)
 
     return processed_img
 

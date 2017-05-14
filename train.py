@@ -9,7 +9,7 @@ class Classifier():
         self.n_classes = n_classes
         self.dropout_keep_prob = dropout_keep_prob
 
-        self.input = tf.placeholder(tf.float32, [None, img_h, img_w, 3])
+        self.input = tf.placeholder(tf.float32, [None, img_h, img_w, 1])
 
         self.conv1 = slim.conv2d(
                 self.input,
@@ -26,12 +26,12 @@ class Classifier():
         )
         self.pool2 = slim.max_pool2d(self.conv2, [4, 4])
 
-        self.classes = tf.nn.dropout(slim.fully_connected(
+        self.classes = slim.fully_connected(
                 slim.flatten(self.pool2),
                 self.n_classes,
                 scope=self.scope+'_fc',
                 activation_fn=None
-        ), self.dropout_keep_prob)
+        )
 
         self.targets = tf.placeholder(tf.int32, [None])
         self.targets_onehot = tf.one_hot(self.targets, self.n_classes)
@@ -46,7 +46,7 @@ def train():
     img_h, img_w = 128, 128
     train_steps = int(1e5)
     batch_size = 10
-    model_name = 'pool_correctd'
+    model_name = 'grayscale_pool_stretch'
 
     nn = Classifier('classifier', img_w, img_h, len(preprocessing.CLASSES), 0.8)
     dataset = list(map(lambda f:f.strip(), open('good_train', 'r').readlines()))
