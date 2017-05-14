@@ -1,5 +1,5 @@
 This is a model for classifying the "EnglishImg" part of the
-[Chars74K dataset] (http://www.ee.surrey.ac.uk/CVSSP/demos/chars74k/).
+[Chars74K dataset](http://www.ee.surrey.ac.uk/CVSSP/demos/chars74k/).
 
 * [Preprocessing](#preprocessing)
 * [Model Choices](#model-choices)
@@ -64,7 +64,7 @@ rewrote the network as follows:
     Dropout (0.8)
     Fully Connected : 62 units | softmax
 
-This network gave the best results on the validation set at 71.7%.
+This network gave the best results on the validation set at **71.7%**.
 
 ## Leads for improving performance
 
@@ -74,7 +74,7 @@ This network gave the best results on the validation set at 71.7%.
   convolution and max pooling than the one presented here.
 
 ## Final model performance
-The final test set accuracy is 69.3%. This result is quite close to the
+The final test set accuracy is **69.3%**. This result is quite close to the
 validation set accuracy (71.7%).
 
 The confusion matrix shows quite good 
@@ -84,18 +84,28 @@ correspond to the lowercase/uppercase equivalent of the letter.
 shows predictions. The order of the classes, top to bottom, is : digits, 
 uppercase, lowercase).
 
-MATRIX
+![Test set confusion matrix](https://raw.githubusercontent.com/fhennecker/chars74k/master/test_set_confusion.png)
 
-An interesting metric is the case insensitive accuracy, which is 75.8%. More
+An interesting metric is the case insensitive accuracy, which is **75.8%**. More
 than 5% of the predictions are correct but miss the case.
 
 A more informal metric is the top 3 accuracy : how many times is the correct
-label in the top 3 predicted classes? This happened 86.5% of the time in the
+label in the top 3 predicted classes? This happened **86.5%** of the time in the
 test set.
 
 Prediction occured at more than 100FPS on a quad-core 2,3GHz Intel Core i7.
 
 ## Failure analysis
+Here are randomly selected examples of errors in the test set classification.
+Characters which were correctly predicted but had the wrong case prediction
+were ignored on purpose. 
+
+![](https://raw.githubusercontent.com/fhennecker/chars74k/master/misclassified1.png)
+![](https://raw.githubusercontent.com/fhennecker/chars74k/master/misclassified2.png)
+
+As you can see, some samples are of very bad quality (heavy distortion, zoom
+or rotation), and some confusions can be understood (the cropped o being
+interpreted as an 'n', the 'B' which has a similar structure as an 'E',...)
 
 ## Help
 The requirements are python3, OpenCV and the requirements written in 
