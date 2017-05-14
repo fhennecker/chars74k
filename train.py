@@ -17,17 +17,21 @@ class Classifier():
                 stride=[2, 2], padding='Valid',
                 scope=self.scope+'_conv1'
         )
-        self.pool1 = slim.max_pool2d(self.conv1, [4, 4])
         self.conv2 = slim.conv2d(
-                self.pool1,
+                self.conv1,
                 num_outputs=32, kernel_size=[4, 4],
                 stride=[2, 2], padding='Valid',
                 scope=self.scope+'_conv2'
         )
-        self.pool2 = slim.max_pool2d(self.conv2, [4, 4])
+        self.conv3 = slim.conv2d(
+                self.conv2,
+                num_outputs=32, kernel_size=[4, 4],
+                stride=[2, 2], padding='Valid',
+                scope=self.scope+'_conv3'
+        )
 
         self.classes = slim.fully_connected(
-                slim.flatten(self.pool2),
+                slim.flatten(self.conv2),
                 self.n_classes,
                 scope=self.scope+'_fc',
                 activation_fn=None
@@ -43,10 +47,10 @@ class Classifier():
 
 
 def train():
-    img_h, img_w = 128, 128
+    img_h, img_w = 64, 64
     train_steps = int(1e5)
     batch_size = 10
-    model_name = 'grayscale_pool_stretch'
+    model_name = 'conv3'
 
     nn = Classifier('classifier', img_w, img_h, len(preprocessing.CLASSES), 0.8)
     dataset = list(map(lambda f:f.strip(), open('good_train', 'r').readlines()))
@@ -61,7 +65,7 @@ def train():
 
         for t in range(train_steps):
             
-            images, labels = preprocessing.get_batch(dataset, 10, (128, 128))
+            images, labels = preprocessing.get_batch(dataset, 10, (64, 64))
 
             loss, _ = sess.run([nn.loss, nn.train_step], feed_dict={
                 nn.input   : images,
@@ -74,7 +78,7 @@ def train():
             if t % 10 == 0: print(loss)
             if t % 1000 == 0: saver.save(sess, 'saves/'+model_name, global_step=t)
             if t % 50 == 0:
-                images, labels = preprocessing.get_batch(validation_dataset, 20, (128, 128))
+                images, labels = preprocessing.get_batch(validation_dataset, 20, (64, 64))
                 classes = sess.run(nn.classes, feed_dict={nn.input:images})
                 summary.value.add(tag='ValidationError',
                         simple_value=float(sum(np.argmax(classes, -1) != labels)))

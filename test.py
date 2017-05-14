@@ -5,7 +5,7 @@ import cv2
 from tqdm import tqdm
 
 def test():
-    img_h, img_w = 128, 128
+    img_h, img_w = 64, 64
 
     nn = train.Classifier('classifier', img_w, img_h, len(preprocessing.CLASSES))
     dataset = list(map(lambda f:f.strip(), open('good_validation', 'r').readlines()))
@@ -14,7 +14,7 @@ def test():
 
     with tf.Session() as sess:
         saver = tf.train.Saver()
-        saver.restore(sess, './saves/grayscale_pool_stretch-30000')
+        saver.restore(sess, './saves/grayscale_pool_stretch_64-32000')
 
         confusion = np.zeros((len(preprocessing.CLASSES), len(preprocessing.CLASSES)))
         good = 0

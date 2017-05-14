@@ -53,7 +53,7 @@ def images_stats(dataset):
         if img.shape[1] > max_width: max_width = img.shape[1]
     print("Max width : %d, max height: %d" % (max_width, max_height))
 
-def open_image(filename, scale_to=[128, 128]):
+def open_image(filename, scale_to=[64, 64]):
     """Opens an image, returns the preprocessed image (scaled, masked)"""
     img = cv2.imread(filename) * cv2.imread(filename.replace('Bmp', 'Msk'))/255
     processed_img = np.zeros(scale_to+[3])
