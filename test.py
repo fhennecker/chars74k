@@ -5,7 +5,7 @@ import cv2
 from tqdm import tqdm
 import argparse
 
-def test(dataset_name, model_name):
+def test(dataset_name, model_name, store_misclassified):
     img_h, img_w = 64, 64
 
     nn = train.Classifier('classifier', img_w, img_h, len(preprocessing.CLASSES))
@@ -38,6 +38,14 @@ def test(dataset_name, model_name):
             if (preprocessing.CLASSES[label].lower()
                     == preprocessing.CLASSES[predicted_label].lower()):
                 correct_case_insensitive += 1
+            else:
+                if store_misclassified:
+                    towrite = np.concatenate((image, np.zeros((20, img_w, 1))))
+                    cv2.putText(
+                            towrite,
+                            preprocessing.CLASSES[predicted_label],
+                            (0, img_h+20), cv2.FONT_HERSHEY_PLAIN, 2, 255)
+                    cv2.imwrite('misclassified/'+str(i)+'.png', towrite)
             if label in classes[0].argsort()[-3:]: in_top3 += 1
 
         # showing metrics
@@ -56,7 +64,8 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('-d', type=str, required=True, help='Dataset name')
     parser.add_argument('-m', type=str, required=True, help='Model name')
+    parser.add_argument('-s', action='store_true', help='Store misclassified')
 
     opt = parser.parse_args()
 
-    test(opt.d, opt.m)
+    test(opt.d, opt.m, opt.s)
