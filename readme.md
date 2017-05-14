@@ -67,7 +67,9 @@ rewrote the network as follows:
 This network gave the best results on the validation set at **71.7%**.
 
 ## Leads for improving performance
-The performance obtained and discussed below are not state-of-the-art. This is
+The performance obtained and discussed below are not state-of-the-art
+([this guy](http://ankivil.com/kaggle-first-steps-with-julia-chars74k-first-place-using-convolutional-neural-networks/)
+ claims for example to reach 86% accuracy). This is
 because the scope of this challenge, I believe, was not to try to get
 extremely close to it but rather to show a work flow and structure. However,
 here are a couple of ideas to improve performance further :
