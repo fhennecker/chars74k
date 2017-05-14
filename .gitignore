@@ -1,0 +1,6 @@
+saves/*
+summaries/*
+ve/*
+
+*.pyc
+__pycache__*
