@@ -31,7 +31,7 @@ class Classifier():
         )
 
         self.classes = slim.fully_connected(
-                slim.flatten(self.conv2),
+                slim.flatten(self.conv3),
                 self.n_classes,
                 scope=self.scope+'_fc',
                 activation_fn=None
